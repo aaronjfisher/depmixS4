@@ -19,15 +19,15 @@ setMethod("fit","MULTINOMresponse",
 			Wts[-1,] <- pars$coefficients # set starting weights
 			if(!is.null(w)) {
 				if(NCOL(y) < 3) {
-					fit <- nnet.default(x,y,weights=w[!nas],size=0,entropy=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE)
+					fit <- nnet.default(x,y,weights=w[!nas],size=0,entropy=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=20000)
 				} else {
-					fit <- nnet.default(x,y,weights=w[!nas],size=0,softmax=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE)
+					fit <- nnet.default(x,y,weights=w[!nas],size=0,softmax=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=20000)
 				}
 			} else {
 				if(NCOL(y) < 3) {
-					fit <- nnet.default(x,y,size=0,entropy=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE)
+					fit <- nnet.default(x,y,size=0,entropy=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=20000)
 				} else {
-					fit <- nnet.default(x,y,size=0,softmax=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE)
+					fit <- nnet.default(x,y,size=0,softmax=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=20000)
 				}
 			}
 			# this is necessary because setpars wants coefficients in column major order
@@ -82,7 +82,7 @@ setMethod("dens","MULTINOMresponse",
 			for(i in 1:nrow(object@y)) {
 				res[i,1] <- dmultinom(object@y[i,],pr=pr[i,])
 			}
-			if(log) return(log(res)) 
+			if(log) return(log(res))
 			else return(res)
 		}
 	}
