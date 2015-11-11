@@ -14,7 +14,7 @@ function(base=1) {
 			}
 			p <- p/sum(p)
 			beta <- numeric(length(p))
-			if(debug) print(beta)
+			if(debug) { print(beta) }
 			if(any(p==1)) beta[which(p==1)]=Inf
 			else beta[-base] <- log(p[-base]/p[base])
 			return(beta)
