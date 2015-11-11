@@ -77,4 +77,3 @@ function(base=1) {
 			name=name,
 			base=base),
 		class="link-glm")
-}
