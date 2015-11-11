@@ -19,7 +19,7 @@ function(base=1) {
 			p <- p/sum(p)
 			beta <- numeric(length(p))
 			if(debug) { print("beta:"); print(beta); readline()}
-			if(debug) { print("p[-beta]"); print(p[-base]); print("p[beta]"); print(p[base]); readline();}
+			if(debug) { print("p[-base]"); print(p[-base]); print("p[base]"); print(p[base]); readline();}
 			if(debug) { print("log(p[-base] / p[base])"); print(log(p[-base] / p[base]));}
 			if(any(p==1)) beta[which(p==1)]=Inf
 			else beta[-base] <- log(p[-base]/p[base])
