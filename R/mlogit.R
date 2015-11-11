@@ -8,7 +8,6 @@ function(base=1) {
 	# 	moreover it does not admit of bases being different from 1??!?!?
 	# 	is it ever used anywhere???????
 	linkfun <- function(p,base, debug=FALSE) {
-		lfun <- function(p,base,debug=FALSE) {
 			if(debug){
 				print(p)
 				print(base)
