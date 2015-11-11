@@ -1,8 +1,8 @@
-# 
+#
 # for the transition models and the prior (y is missing, ie there is no
 # response, and nstates must be provided as the number of categories
 # neccessary in the mulinomial model)
-# 
+#
 
 setClass("transInit",contains="GLMresponse")
 
@@ -10,7 +10,7 @@ setMethod("transInit",
 	signature(formula="formula"),
 	function(formula,nstates,data=NULL,family=multinomial(),pstart=NULL,fixed=NULL,prob=TRUE, ...) {
 		call <- match.call()
-		if(formula==formula(~1) &is.null(data)) { # &is.null(data) removed this in the condition as it 
+		if(formula==formula(~1) &is.null(data)) { # &is.null(data) removed this in the condition as it
 			# creates the wrong dimension for the dens function when data is used (but not needed)
 			x <- matrix(1,ncol=1)
 		} else {
@@ -48,7 +48,7 @@ setMethod("transInit",
 				parameters$coefficients <- matrix(0,ncol=nstates,nrow=ncol(x))
 				if(is.null(fixed)) {
 					fixed <- parameters$coefficients
-					fixed[,family$base] <- 1 
+					fixed[,family$base] <- 1
 					fixed <- c(as.logical(t(fixed)))
 			  }
 				colnames(parameters$coefficients) <- paste("St",1:nstates,sep="")
@@ -102,13 +102,41 @@ setMethod("dens","transInit",
 setMethod("predict","transInit",
 	function(object,newx) {
 		if(missing(newx)) {
-			if(object@family$link=="identity") object@family$linkinv(object@x%*%object@parameters$coefficients)
-			else object@family$linkinv(object@x%*%object@parameters$coefficients,base=object@family$base)
+			if(object@family$link=="identity") {
+				# Debugging
+				print("missing newx and we are an identity link function")
+				print(object@x)
+				print(object@parameters$coefficients)
+				# End Debugging
+				object@family$linkinv(object@x%*%object@parameters$coefficients)
+			}
+			else {
+				# Debugging
+				print("missing newx and we are NOT an identity link function")
+				print(object@x)
+				print(object@parameters$coefficients)
+				# End Debugging
+				object@family$linkinv(object@x%*%object@parameters$coefficients,base=object@family$base)
+			}
 		} else {
 			if(!(is.matrix(newx))) stop("'newx' must be matrix in predict(transInit)")
 			if(!(ncol(newx)==nrow(object@parameters$coefficients))) stop("Incorrect dimension of 'newx' in predict(transInit)")
-			if(object@family$link=="identity") object@family$linkinv(newx%*%object@parameters$coefficients)
-			else object@family$linkinv(newx%*%object@parameters$coefficients,base=object@family$base)
+			if(object@family$link=="identity") {
+				# Debugging
+				print("not missing newx and we are an identity link function")
+				print(newx)
+				print(object@parameters$coefficients)
+				# End Debugging
+				object@family$linkinv(newx%*%object@parameters$coefficients)
+			}
+			else {
+				# Debugging
+				print("not missing newx and we are NOT an idenitty link function")
+				print(newx)
+				print(object@parameters$coefficients)
+				# End Debugging
+				object@family$linkinv(newx%*%object@parameters$coefficients,base=object@family$base)
+			}
 		}
 	}
 )

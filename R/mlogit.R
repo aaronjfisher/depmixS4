@@ -1,6 +1,6 @@
-# 
+#
 # MULTINOMIAL LINK FUNCTION USED IN FAMILY OBJECT
-# 
+#
 
 mlogit <-
 function(base=1) {
@@ -25,6 +25,12 @@ function(base=1) {
 	linkinv <- function(eta,base) {
 		linv <- function(eta,base) {
 			pp <- numeric(length(eta))
+			# Debugging
+			print(eta)
+			print(is.infinite(eta))
+			print(eta > log(.Machine$double.xmax))
+			print(eta > log(.Machine$double.xmin))
+			# End Debugging
 			if(any(is.infinite(eta)) || any(eta > log(.Machine$double.xmax)) || any(eta < log(.Machine$double.xmin))) {
 				pp[which(is.infinite(eta))] <- 1
 				pp[which(eta > log(.Machine$double.xmax))] <- 1 # change this to something better!
@@ -39,7 +45,7 @@ function(base=1) {
 		if(is.matrix(eta)) {
 			if(ncol(eta)==1) {
 				pp <- as.matrix(apply(eta,1,linv,base=base)) # fixes problem with column matrix eta
-			} else pp <- t(apply(eta,1,linv,base=base)) 	
+			} else pp <- t(apply(eta,1,linv,base=base))
 		} else {
 			pp <- linv(eta,base)
 		}
@@ -52,7 +58,7 @@ function(base=1) {
 	valideta <- function(eta) {
 		TRUE # fix me
 	}
-	
+
 	name <- "mlogit"
 	structure(list(linkfun=linkfun,
 			linkinv=linkinv,
@@ -62,4 +68,3 @@ function(base=1) {
 			base=base),
 		class="link-glm")
 }
-
