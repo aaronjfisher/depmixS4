@@ -105,16 +105,16 @@ setMethod("predict","transInit",
 			if(object@family$link=="identity") {
 				# Debugging
 				print("missing newx and we are an identity link function")
-				print(object@x)
-				print(object@parameters$coefficients)
+				print(head(object@x))
+				print(head(object@parameters$coefficients))
 				# End Debugging
 				object@family$linkinv(object@x%*%object@parameters$coefficients)
 			}
 			else {
 				# Debugging
 				print("missing newx and we are NOT an identity link function")
-				print(object@x)
-				print(object@parameters$coefficients)
+				print(head(object@x))
+				print(head(object@parameters$coefficients))
 				# End Debugging
 				object@family$linkinv(object@x%*%object@parameters$coefficients,base=object@family$base)
 			}
@@ -124,16 +124,16 @@ setMethod("predict","transInit",
 			if(object@family$link=="identity") {
 				# Debugging
 				print("not missing newx and we are an identity link function")
-				print(newx)
-				print(object@parameters$coefficients)
+				print(head(newx))
+				print(head(object@parameters$coefficients))
 				# End Debugging
 				object@family$linkinv(newx%*%object@parameters$coefficients)
 			}
 			else {
 				# Debugging
 				print("not missing newx and we are NOT an idenitty link function")
-				print(newx)
-				print(object@parameters$coefficients)
+				print(head(newx))
+				print(head(object@parameters$coefficients))
 				# End Debugging
 				object@family$linkinv(newx%*%object@parameters$coefficients,base=object@family$base)
 			}
