@@ -92,6 +92,9 @@ setMethod("predict","MULTINOMresponse",
 	function(object) {
 		if(object@family$link=="identity") object@x%*%object@parameters$coefficients
 		else {
+			print("predict multinomial response")
+			print(object@x)
+			print(object@parameters$coefficients)
 			object@family$linkinv(object@x%*%object@parameters$coefficients,base=object@family$base)
 		}
 	}
