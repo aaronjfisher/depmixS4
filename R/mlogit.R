@@ -7,10 +7,15 @@ function(base=1) {
 	# 	matrix formulation is possibly very inefficient?!?!?
 	# 	moreover it does not admit of bases being different from 1??!?!?
 	# 	is it ever used anywhere???????
-	linkfun <- function(p,base) {
-		lfun <- function(p,base) {
+	linkfun <- function(p,base, debug=FALSE) {
+		lfun <- function(p,base,debug=FALSE) {
+			if(debug){
+				print(p)
+				print(base)
+			}
 			p <- p/sum(p)
 			beta <- numeric(length(p))
+			if(debug) print(beta)
 			if(any(p==1)) beta[which(p==1)]=Inf
 			else beta[-base] <- log(p[-base]/p[base])
 			return(beta)
