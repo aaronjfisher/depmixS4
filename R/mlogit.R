@@ -7,7 +7,8 @@ function(base=1) {
 	# 	matrix formulation is possibly very inefficient?!?!?
 	# 	moreover it does not admit of bases being different from 1??!?!?
 	# 	is it ever used anywhere???????
-	linkfun <- function(p,base, debug=TRUE) {
+	linkfun <- function(p,base, debug=FALSE) {
+		lfun <- function(p,base,debug=TRUE) {
 			if(debug){
 				print(p)
 				print(base)
@@ -77,3 +78,4 @@ function(base=1) {
 			name=name,
 			base=base),
 		class="link-glm")
+}
