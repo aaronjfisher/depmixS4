@@ -23,6 +23,8 @@ function(base=1) {
 		return(beta)
 	}
 	linkinv <- function(eta,base) {
+		print("Beginning of linkinv")
+		print(eta)
 		linv <- function(eta,base) {
 			pp <- numeric(length(eta))
 			# Debugging
@@ -47,6 +49,7 @@ function(base=1) {
 				pp <- as.matrix(apply(eta,1,linv,base=base)) # fixes problem with column matrix eta
 			} else pp <- t(apply(eta,1,linv,base=base))
 		} else {
+			print("Calling linv")
 			pp <- linv(eta,base)
 		}
 		return(pp)
