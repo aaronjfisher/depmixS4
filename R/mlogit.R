@@ -8,7 +8,7 @@ function(base=1) {
 	# 	moreover it does not admit of bases being different from 1??!?!?
 	# 	is it ever used anywhere???????
 	linkfun <- function(p,base, debug=FALSE) {
-		lfun <- function(p,base,debug=FALSE) {
+		lfun <- function(p,base,debug=TRUE) {
 			if(debug){
 				print("p:")
 				print(p)
@@ -16,13 +16,12 @@ function(base=1) {
 				print(base)
 				readline()
 			}
-			Sys.sleep(0.2)
 			p <- p/sum(p)
 			beta <- numeric(length(p))
 			if(debug) { print("beta:"); print(beta); readline()}
-			if(any(p==1)) beta[which(p==1)]=Inf
 			if(debug) { print("p[-beta]"); print(p[-base]); print("p[beta]"); print(p[base]); readline();}
-			Sys.sleep(0.2)
+			if(debug) { print("log(p[-base] / p[base])"); print(log(p[-base] / p[base]));}
+			if(any(p==1)) beta[which(p==1)]=Inf
 			else beta[-base] <- log(p[-base]/p[base])
 			return(beta)
 		}
