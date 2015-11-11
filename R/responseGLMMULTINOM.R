@@ -90,9 +90,12 @@ setMethod("dens","MULTINOMresponse",
 
 setMethod("predict","MULTINOMresponse",
 	function(object) {
+		print("predict multinomial response we are identity")
+		print(object@x)
+		print(object@parameters$coefficients)
 		if(object@family$link=="identity") object@x%*%object@parameters$coefficients
 		else {
-			print("predict multinomial response")
+			print("predict multinomial response we are NOT identity")
 			print(object@x)
 			print(object@parameters$coefficients)
 			object@family$linkinv(object@x%*%object@parameters$coefficients,base=object@family$base)
