@@ -16,11 +16,13 @@ function(base=1) {
 				print(base)
 				readline()
 			}
+			Sys.sleep(0.2)
 			p <- p/sum(p)
 			beta <- numeric(length(p))
 			if(debug) { print("beta:"); print(beta); readline()}
 			if(any(p==1)) beta[which(p==1)]=Inf
 			if(debug) { print("p[-beta]"); print(p[-base]); print("p[beta]"); print(p[base]); readline();}
+			Sys.sleep(0.2)
 			else beta[-base] <- log(p[-base]/p[base])
 			return(beta)
 		}
