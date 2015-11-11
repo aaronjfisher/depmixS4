@@ -22,16 +22,20 @@ function(base=1) {
 		}
 		return(beta)
 	}
-	linkinv <- function(eta,base) {
+	linkinv <- function(eta,base,debug=FALSE) {
+		if(debug){
 		print("Beginning of linkinv")
 		print(eta)
+	}
 		linv <- function(eta,base) {
 			pp <- numeric(length(eta))
 			# Debugging
+			if(debug){
 			print(eta)
 			print(is.infinite(eta))
 			print(eta > log(.Machine$double.xmax))
 			print(eta > log(.Machine$double.xmin))
+		}
 			# End Debugging
 			if(any(is.infinite(eta)) || any(eta > log(.Machine$double.xmax)) || any(eta < log(.Machine$double.xmin))) {
 				pp[which(is.infinite(eta))] <- 1
@@ -49,7 +53,6 @@ function(base=1) {
 				pp <- as.matrix(apply(eta,1,linv,base=base)) # fixes problem with column matrix eta
 			} else pp <- t(apply(eta,1,linv,base=base))
 		} else {
-			print("Calling linv")
 			pp <- linv(eta,base)
 		}
 		return(pp)

@@ -100,21 +100,25 @@ setMethod("dens","transInit",
 )
 
 setMethod("predict","transInit",
-	function(object,newx) {
+	function(object,newx,debug=FALSE) {
 		if(missing(newx)) {
 			if(object@family$link=="identity") {
 				# Debugging
+				if(debug){
 				print("missing newx and we are an identity link function")
 				print(head(object@x))
 				print(head(object@parameters$coefficients))
+			}
 				# End Debugging
 				object@family$linkinv(object@x%*%object@parameters$coefficients)
 			}
 			else {
+				if(debug){
 				# Debugging
 				print("missing newx and we are NOT an identity link function")
 				print(head(object@x))
 				print(head(object@parameters$coefficients))
+			}
 				# End Debugging
 				object@family$linkinv(object@x%*%object@parameters$coefficients,base=object@family$base)
 			}
@@ -123,17 +127,21 @@ setMethod("predict","transInit",
 			if(!(ncol(newx)==nrow(object@parameters$coefficients))) stop("Incorrect dimension of 'newx' in predict(transInit)")
 			if(object@family$link=="identity") {
 				# Debugging
+				if(debug){
 				print("not missing newx and we are an identity link function")
 				print(head(newx))
 				print(head(object@parameters$coefficients))
+			}
 				# End Debugging
 				object@family$linkinv(newx%*%object@parameters$coefficients)
 			}
 			else {
 				# Debugging
+				if(debug){
 				print("not missing newx and we are NOT an idenitty link function")
 				print(head(newx))
 				print(head(object@parameters$coefficients))
+			}
 				# End Debugging
 				object@family$linkinv(newx%*%object@parameters$coefficients,base=object@family$base)
 			}
