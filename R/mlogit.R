@@ -20,6 +20,7 @@ function(base=1) {
 			beta <- numeric(length(p))
 			if(debug) { print("beta:"); print(beta); readline()}
 			if(any(p==1)) beta[which(p==1)]=Inf
+			if(debug) { print("p[-beta]"); print(p[-base]); print("p[beta]"); print(p[base]); readline();}
 			else beta[-base] <- log(p[-base]/p[base])
 			return(beta)
 		}
