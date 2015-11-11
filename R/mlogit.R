@@ -10,12 +10,15 @@ function(base=1) {
 	linkfun <- function(p,base, debug=FALSE) {
 		lfun <- function(p,base,debug=TRUE) {
 			if(debug){
+				print("p:")
 				print(p)
+				print("base:")
 				print(base)
+				readline()
 			}
 			p <- p/sum(p)
 			beta <- numeric(length(p))
-			if(debug) { print(beta) }
+			if(debug) { print("beta:"); print(beta); readline()}
 			if(any(p==1)) beta[which(p==1)]=Inf
 			else beta[-base] <- log(p[-base]/p[base])
 			return(beta)
