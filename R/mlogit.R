@@ -9,15 +9,9 @@ function(base=1) {
 	# 	is it ever used anywhere???????
 	linkfun <- function(p,base, debug=FALSE) {
 		lfun <- function(p,base,debug=TRUE) {
-			if(debug){
-				print("p:")
-				print(p)
-				print("base:")
-				print(base)
-				readline()
-			}
 			p <- p/sum(p)
 			beta <- numeric(length(p))
+			if(debug) { print("p:"); print(p); print("base:"); print(base); readline() }
 			if(debug) { print("beta:"); print(beta); readline()}
 			if(debug) { print("p[-base]"); print(p[-base]); print("p[base]"); print(p[base]); readline();}
 			if(debug) { print("log(p[-base] / p[base])"); print(log(p[-base] / p[base]));}
