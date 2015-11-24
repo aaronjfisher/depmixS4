@@ -299,7 +299,10 @@ em.depmix <- function(object,maxit=100,tol=1e-8,crit=c("relative","absolute"),ra
 	  if(na.allow) B[is.na(B)] <- 1
 	  fbo$logLike <- sum(log((apply(B,c(1,3),prod))[cbind(1:sum(ntimes),vstate)]))
 	} else {
+    print("Forward-Backward")
+    starttime = proc.time()
 	  fbo <- fb(init=init,A=trDens,B=dens,ntimes=ntimes(object),homogeneous=object@homogeneous)
+    print(proc.time() - starttime)
   }
 	LL <- fbo$logLike
 	if(is.nan(LL)) stop("Starting values not feasible; please provide them.")
@@ -310,6 +313,7 @@ em.depmix <- function(object,maxit=100,tol=1e-8,crit=c("relative","absolute"),ra
 
 		# maximization
 		prior@y <- fbo$gamma[bt,,drop=FALSE]
+    print("Prior Maximization")
 		prior <- fit(prior, w=NULL, ntimes=NULL)
 		init <- dens(prior)
 
@@ -317,6 +321,7 @@ em.depmix <- function(object,maxit=100,tol=1e-8,crit=c("relative","absolute"),ra
 		for(i in 1:ns) {
 			if(!object@homogeneous) {
 				transition[[i]]@y <- fbo$xi[,,i]/fbo$gamma[,i]
+        print("Transition Maximization")
 				transition[[i]] <- fit(transition[[i]],w=as.matrix(fbo$gamma[,i]),ntimes=ntimes(object)) # check this
 			} else {
 				for(k in 1:ns) {
