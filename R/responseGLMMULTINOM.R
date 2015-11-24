@@ -19,15 +19,23 @@ setMethod("fit","MULTINOMresponse",
 			Wts[-1,] <- pars$coefficients # set starting weights
 			if(!is.null(w)) {
 				if(NCOL(y) < 3) {
+					starttime = proc.time()
 					fit <- nnet.default(x,y,weights=w[!nas],size=0,entropy=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=20000)
+					print(proc.time() - starttime)
 				} else {
+					starttime = proc.time()
 					fit <- nnet.default(x,y,weights=w[!nas],size=0,softmax=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=20000)
+					print(proc.time() - starttime)
 				}
 			} else {
 				if(NCOL(y) < 3) {
+					starttime = proc.time()
 					fit <- nnet.default(x,y,size=0,entropy=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=20000)
+					print(proc.time() - starttime)
 				} else {
+					startttime = proc.time()
 					fit <- nnet.default(x,y,size=0,softmax=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=20000)
+					print(proc.time() - starttime)
 				}
 			}
 			# this is necessary because setpars wants coefficients in column major order
