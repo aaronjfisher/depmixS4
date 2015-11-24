@@ -19,15 +19,15 @@ setMethod("fit","MULTINOMresponse",
 			Wts[-1,] <- pars$coefficients # set starting weights
 			if(!is.null(w)) {
 				if(NCOL(y) < 3) {
-					fit <- nnet.default(x,y,weights=w[!nas],size=0,entropy=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=20000)
+					fit <- print(microbenchmark(nnet.default(x,y,weights=w[!nas],size=0,entropy=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=20000), times=1))
 				} else {
-					fit <- nnet.default(x,y,weights=w[!nas],size=0,softmax=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=20000)
+					fit <- print(microbenchmark(nnet.default(x,y,weights=w[!nas],size=0,softmax=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=20000), times=1))
 				}
 			} else {
 				if(NCOL(y) < 3) {
-					fit <- nnet.default(x,y,size=0,entropy=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=20000)
+					fit <- print(microbenchmark(nnet.default(x,y,size=0,entropy=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=20000), times=1))
 				} else {
-					fit <- nnet.default(x,y,size=0,softmax=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=20000)
+					fit <- print(microbenchmark(nnet.default(x,y,size=0,softmax=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=20000), times=1))
 				}
 			}
 			# this is necessary because setpars wants coefficients in column major order

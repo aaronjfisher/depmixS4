@@ -31,19 +31,19 @@ emviterbi <- function(A,B,init,ntimes,nstates,homogeneous,na.allow=TRUE) {
     lt <- length(ntimes)
     et <- cumsum(ntimes)
     bt <- c(1,et[-lt]+1)
-    
+
     ns <- nstates
-    
+
     delta <- psi <- matrix(nrow=nt,ncol=ns)
     state <- vector(length=nt)
-    
+
     prior <- init
-    
+
     #if(max(ntimes>1)) A <- object@trDens
     #B <- object@dens
     if(na.allow) B <- replace(B,is.na(B),1)
     B <- apply(B,c(1,3),prod)
-    
+
     for(case in 1:lt) {
       # initialization
       delta[bt[case],] <- prior[case,]*B[bt[case],]
@@ -64,13 +64,13 @@ emviterbi <- function(A,B,init,ntimes,nstates,homogeneous,na.allow=TRUE) {
             psi[tt,j] <- k
           }
           delta[tt,] <- delta[tt,]/(sum(delta[tt,]))
-          
+
         }
       }
-      
+
       # trace maximum likely state
       state[et[case]] <- which.max(delta[et[case],])
-      
+
       # this doesn't need a for loop does it???? FIX ME
       if(ntimes[case]>1) {
         for(i in (et[case]-1):bt[case]) {
@@ -78,8 +78,8 @@ emviterbi <- function(A,B,init,ntimes,nstates,homogeneous,na.allow=TRUE) {
         }
       }
     }
-    
-    delta <- data.frame(state,delta) 	
+
+    delta <- data.frame(state,delta)
     return(delta)
 }
 
@@ -98,25 +98,25 @@ em <- function(object,...) {
 
 # em for lca and mixture models
 em.mix <- function(object,maxit=100,tol=1e-8,crit=c("relative","absolute"),random.start=TRUE,verbose=FALSE,classification=c("soft","hard"),na.allow=TRUE,...) {
-	
+
 	clsf <- match.arg(classification)
 	crit <- match.arg(crit)
-	
+
 	if(!is(object,"mix")) stop("object is not of class 'mix'")
-		
+
 	ns <- nstates(object)
 	ntimes <- ntimes(object)
 	lt <- length(ntimes)
 	et <- cumsum(ntimes)
 	bt <- c(1,et[-lt]+1)
-  
+
 	prior <- object@prior
 	response <- object@response
 	dens <- object@dens
 	init <- dens(object@prior)
 
 	converge <- FALSE
-	
+
 	if(random.start) {
 		nr <- sum(ntimes(object))
 		gamma <- rdirichlet(nr,alpha=rep(.01,ns))
@@ -124,9 +124,10 @@ em.mix <- function(object,maxit=100,tol=1e-8,crit=c("relative","absolute"),rando
 		    gamma <- t(apply(gamma,1,ind.max))
 		}
 		LL <- -1e10
-		
+
 		for(i in 1:ns) {
 			for(k in 1:nresp(object)) {
+        print(paste("Optimizing Parameters for Response", k))
 			  response[[i]][[k]] <- fit(response[[i]][[k]],w=gamma[,i])
 				# update dens slot of the model
 				dens[,k,i] <- dens(response[[i]][[k]])
@@ -143,9 +144,9 @@ em.mix <- function(object,maxit=100,tol=1e-8,crit=c("relative","absolute"),rando
 		  fbo <- fb(init=init,matrix(0,1,1),B=dens,ntimes=ntimes(object))
 		}
 		LL <- fbo$logLike
-		
+
 		if(is.nan(LL)) stop("Cannot find suitable starting values; please provide them.")
-		
+
 	} else {
 		# initial expectation
 		fbo <- fb(init=init,A=matrix(0,1,1),B=dens,ntimes=ntimes(object))
@@ -155,29 +156,30 @@ em.mix <- function(object,maxit=100,tol=1e-8,crit=c("relative","absolute"),rando
 		  B <- object@dens
 		  if(na.allow) B[is.na(B)] <- 1
 		  fbo$logLike <- sum(log((apply(B,c(1,3),prod))[cbind(1:sum(ntimes),vstate)]))
-          
+
 		}
 		LL <- fbo$logLike
 		if(is.nan(LL)) stop("Starting values not feasible; please provide them.")
 	}
-	
+
 	LL.old <- LL + 1
-	
+
 	for(j in 0:maxit) {
-		
-		# maximization		
+
+		# maximization
 		prior@y <- fbo$gamma[bt,,drop=FALSE]
 		prior <- fit(prior, w=NULL,ntimes=NULL)
 		init <- dens(prior)
-		
+
 		for(i in 1:ns) {
 			for(k in 1:nresp(object)) {
+        print(paste("Optimizing Parameters for Response", k))
 				response[[i]][[k]] <- fit(response[[i]][[k]],w=fbo$gamma[,i])
 				# update dens slot of the model
 				dens[,k,i] <- dens(response[[i]][[k]])
 			}
 		}
-		
+
 		# expectation
 		fbo <- fb(init=init,A=matrix(0,1,1),B=dens,ntimes=ntimes(object))
 		if(clsf == "hard") {
@@ -192,7 +194,7 @@ em.mix <- function(object,maxit=100,tol=1e-8,crit=c("relative","absolute"),rando
 		if(verbose&((j%%5)==0)) {
 			cat("iteration",j,"logLik:",LL,"\n")
 		}
-		
+
 		if(LL >= LL.old) {
 		  converge <- (crit == "absolute" &&  LL - LL.old < tol) || (crit == "relative" && (LL - LL.old)/abs(LL.old)  < tol)
       if(converge) {
@@ -206,7 +208,7 @@ em.mix <- function(object,maxit=100,tol=1e-8,crit=c("relative","absolute"),rando
 
 		LL.old <- LL
 	}
-  
+
 	object@prior <- prior
 	object@init <- init
 	object@response <- response
@@ -225,7 +227,7 @@ em.mix <- function(object,maxit=100,tol=1e-8,crit=c("relative","absolute"),rando
 		  object@message <- switch(crit,
 			  relative = "Log classification likelihood converged to within tol. (relative change)",
 			  absolute = "Log classification likelihood converged to within tol. (absolute change)"
-		  )	  
+		  )
 	  } else {
 		  object@message <- switch(crit,
 			  relative = "Log likelihood converged to within tol. (relative change)",
@@ -240,44 +242,45 @@ em.mix <- function(object,maxit=100,tol=1e-8,crit=c("relative","absolute"),rando
 	object@conMat <- constraints$lincon
 	object@lin.lower <- constraints$lin.l
 	object@lin.upper <- constraints$lin.u
-	
+
 	object
-	
+
 }
 
 # em for hidden markov models
 em.depmix <- function(object,maxit=100,tol=1e-8,crit=c("relative","absolute"),random.start=TRUE,verbose=FALSE,classification=c("soft","hard"),na.allow=TRUE,...) {
-	
+
 	if(!is(object,"depmix")) stop("object is not of class 'depmix'")
-	
+
 	clsf <- match.arg(classification)
 	crit <- match.arg(crit)
-  
+
 	ns <- nstates(object)
-	
+
 	ntimes <- ntimes(object)
 	lt <- length(ntimes)
 	et <- cumsum(ntimes)
 	bt <- c(1,et[-lt]+1)
-  
+
 	prior <- object@prior
 	transition <- object@transition
 	trDens <- object@trDens
 	response <- object@response
 	dens <- object@dens
 	init <- dens(object@prior)
-	
+
 	if(random.start) {
-				
+
 		nr <- sum(ntimes(object))
 		gamma <- rdirichlet(nr,alpha=rep(.01,ns))
 		if(clsf == "hard") {
 		    gamma <- t(apply(gamma,1,ind.max))
 		}
 		LL <- -1e10
-		
+
 		for(i in 1:ns) {
 			for(k in 1:nresp(object)) {
+        print(paste("Optimizing Parameters for Response", k))
 				response[[i]][[k]] <- fit(response[[i]][[k]],w=gamma[,i])
 				# update dens slot of the model
 				dens[,k,i] <- dens(response[[i]][[k]])
@@ -301,15 +304,15 @@ em.depmix <- function(object,maxit=100,tol=1e-8,crit=c("relative","absolute"),ra
 	LL <- fbo$logLike
 	if(is.nan(LL)) stop("Starting values not feasible; please provide them.")
 	LL.old <- LL + 1 # force the "old" likelihood to be larger...
-	
+
 	converge <- FALSE
 	for(j in 0:maxit) {
-		
+
 		# maximization
 		prior@y <- fbo$gamma[bt,,drop=FALSE]
 		prior <- fit(prior, w=NULL, ntimes=NULL)
 		init <- dens(prior)
-				
+
 		trm <- matrix(0,ns,ns)
 		for(i in 1:ns) {
 			if(!object@homogeneous) {
@@ -330,15 +333,16 @@ em.depmix <- function(object,maxit=100,tol=1e-8,crit=c("relative","absolute"),ra
 			# update trDens slot of the model
 			trDens[,,i] <- dens(transition[[i]])
 		}
-		
+
 		for(i in 1:ns) {
 			for(k in 1:nresp(object)) {
+        print(paste("Optimizing Parameters for Response", k))
 				response[[i]][[k]] <- fit(response[[i]][[k]],w=fbo$gamma[,i])
 				# update dens slot of the model
 				dens[,k,i] <- dens(response[[i]][[k]])
 			}
 		}
-		
+
 		if(clsf == "hard") {
       fbo <- list()
       vstate <- emviterbi(A=trDens,B=dens,init=init,ntimes=object@ntimes,nstates=ns,homogeneous=object@homogeneous,na.allow=na.allow)[,1]
@@ -351,14 +355,14 @@ em.depmix <- function(object,maxit=100,tol=1e-8,crit=c("relative","absolute"),ra
 		  fbo$logLike <- sum(log((apply(B,c(1,3),prod))[cbind(1:sum(ntimes),vstate)]))
 		} else {
 		  # expectation
-		  fbo <- fb(init=init,A=trDens,B=dens,ntimes=ntimes(object),homogeneous=object@homogeneous)	  
+		  fbo <- fb(init=init,A=trDens,B=dens,ntimes=ntimes(object),homogeneous=object@homogeneous)
 	  }
-	  
-	  LL <- fbo$logLike	
-		
+
+	  LL <- fbo$logLike
+
 
 		if( (LL >= LL.old)) {
-		  converge <- (crit == "absolute" &&  LL - LL.old < tol) || (crit == "relative" && (LL - LL.old)/abs(LL.old)  < tol) 
+		  converge <- (crit == "absolute" &&  LL - LL.old < tol) || (crit == "relative" && (LL - LL.old)/abs(LL.old)  < tol)
       if(converge) {
 			  cat("converged at iteration",j,"with logLik:",LL,"\n")
         break
@@ -367,20 +371,20 @@ em.depmix <- function(object,maxit=100,tol=1e-8,crit=c("relative","absolute"),ra
 		  # this should not really happen...
 		  if(j > 0 && (LL.old - LL) > tol) stop("likelihood decreased on iteration ",j)
 		}
-		
+
 		LL.old <- LL
 		#j <- j+1
-		
+
 		if(verbose&((j%%5)==0)) cat("iteration",j,"logLik:",LL,"\n")
 	}
-                      
+
   object@prior <- prior
   object@init <- init
   object@transition <- transition
   object@trDens <- trDens
   object@response <- response
   object@dens <- dens
-		
+
 	if(clsf == "hard") {
 	    object <- as(object,"depmix.fitted.classLik") # class(object) <- "depmix.fitted.classLik"
 	    object@posterior <- data.frame(state=viterbi(object)[,1])
@@ -388,13 +392,13 @@ em.depmix <- function(object,maxit=100,tol=1e-8,crit=c("relative","absolute"),ra
 	    object <- as(object,"depmix.fitted") #  class(object) <- "depmix.fitted"
 	    object@posterior <- viterbi(object)
 	}
-	
+
 	if(converge) {
 	    if(clsf == "hard") {
 		    object@message <- switch(crit,
 			    relative = "Log classification likelihood converged to within tol. (relative change)",
 			    absolute = "Log classification likelihood converged to within tol. (absolute change)"
-		    )	    
+		    )
 	    } else {
 		    object@message <- switch(crit,
 			    relative = "Log likelihood converged to within tol. (relative change)",
@@ -402,13 +406,13 @@ em.depmix <- function(object,maxit=100,tol=1e-8,crit=c("relative","absolute"),ra
 		    )
 		}
 	} else object@message <- "'maxit' iterations reached in EM without convergence."
-	
+
 	# no constraints in EM, except for the standard constraints ...
 	# which are produced by the following (only necessary for getting df right in logLik and such)
 	constraints <- getConstraints(object)
 	object@conMat <- constraints$lincon
 	object@lin.lower <- constraints$lin.l
 	object@lin.upper <- constraints$lin.u
-	
+
 	object
 }
