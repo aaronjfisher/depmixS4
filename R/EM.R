@@ -314,12 +314,16 @@ em.depmix <- function(object,maxit=100,tol=1e-8,crit=c("relative","absolute"),ra
 		# maximization
 		prior@y <- fbo$gamma[bt,,drop=FALSE]
     print("Prior Maximization")
+    starttime = proc.time()
 		prior <- fit(prior, w=NULL, ntimes=NULL)
+    print(proc.time() - starttime)
+
 		init <- dens(prior)
 
 		trm <- matrix(0,ns,ns)
+    starttime = proc.time()
+    print("Transition Maximization")
 		for(i in 1:ns) {
-      print("Transition Maximization")
 			if(!object@homogeneous) {
 				transition[[i]]@y <- fbo$xi[,,i]/fbo$gamma[,i]
 
@@ -339,6 +343,7 @@ em.depmix <- function(object,maxit=100,tol=1e-8,crit=c("relative","absolute"),ra
 			# update trDens slot of the model
 			trDens[,,i] <- dens(transition[[i]])
 		}
+    print(proc.time() - starttime)
 
 		for(i in 1:ns) {
 			for(k in 1:nresp(object)) {
