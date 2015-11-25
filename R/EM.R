@@ -366,7 +366,10 @@ em.depmix <- function(object,maxit=100,tol=1e-8,crit=c("relative","absolute"),ra
 		  fbo$logLike <- sum(log((apply(B,c(1,3),prod))[cbind(1:sum(ntimes),vstate)]))
 		} else {
 		  # expectation
+      print("Forward-Backward")
+      starttime = proc.time()
 		  fbo <- fb(init=init,A=trDens,B=dens,ntimes=ntimes(object),homogeneous=object@homogeneous)
+      print(proc.time() - starttime)
 	  }
 
 	  LL <- fbo$logLike
