@@ -319,9 +319,10 @@ em.depmix <- function(object,maxit=100,tol=1e-8,crit=c("relative","absolute"),ra
 
 		trm <- matrix(0,ns,ns)
 		for(i in 1:ns) {
+      print("Transition Maximization")
 			if(!object@homogeneous) {
 				transition[[i]]@y <- fbo$xi[,,i]/fbo$gamma[,i]
-        print("Transition Maximization")
+
 				transition[[i]] <- fit(transition[[i]],w=as.matrix(fbo$gamma[,i]),ntimes=ntimes(object)) # check this
 			} else {
 				for(k in 1:ns) {
