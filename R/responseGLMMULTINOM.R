@@ -21,7 +21,7 @@ setMethod("fit","MULTINOMresponse",
 			if(!is.null(w)) {
 				if(NCOL(y) < 3) {
 					# fit <- nnet.default(x,y,weights=w[!nas],size=0,entropy=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=20000)
-					fit <- avNNet.default(x,y,weights=w[!nas], size=0, enthropy=TRUE, skip=TRUE, mask=mask, Wts=Wts, trace=FALSE, maxNWts=20000)
+					fit <- avNNet.default(x,y,weights=w[!nas], size=0, entropy=TRUE, skip=TRUE, mask=mask, Wts=Wts, trace=FALSE, maxNWts=20000)
 				} else {
 					# fit <- nnet.default(x,y,weights=w[!nas],size=0,softmax=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=20000)
 					fit <- avNNet.default(x,y,weights=w[!nas],size=0,softmax=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=20000)
