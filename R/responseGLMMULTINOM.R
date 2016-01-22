@@ -17,21 +17,26 @@ setMethod("fit","MULTINOMresponse",
 			mask <- rbind(0,mask) # fix automatic "bias" nodes to 0
 			Wts <- mask
 			Wts[-1,] <- pars$coefficients # set starting weights
+			cat("registering cores")
 			registerDoMC(detectCores()) # detect number of cores on machine and register them with the doMC package to run nnets in parallel.
 			if(!is.null(w)) {
 				if(NCOL(y) < 3) {
 					# fit <- nnet.default(x,y,weights=w[!nas],size=0,entropy=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=20000)
+					cat("calling NNET: 1")
 					fit <- avNNet.default(x,y,weights=w[!nas], size=0, entropy=TRUE, skip=TRUE, mask=mask, Wts=Wts, trace=FALSE, maxNWts=20000)
 				} else {
 					# fit <- nnet.default(x,y,weights=w[!nas],size=0,softmax=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=20000)
+					cat("calling NNET: 2")
 					fit <- avNNet.default(x,y,weights=w[!nas],size=0,softmax=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=20000)
 				}
 			} else {
 				if(NCOL(y) < 3) {
 					# fit <- nnet.default(x,y,size=0,entropy=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=20000)
+					cat("calling NNET: 3")
 					fit <- avNNet.default(x,y,size=0,entropy=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=20000)
 				} else {
 					# fit <- nnet.default(x,y,size=0,softmax=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=20000)
+					cat("calling NNET: 4")
 					fit <- avNNet.default(x,y,size=0,softmax=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=20000)
 				}
 			}
