@@ -28,10 +28,10 @@ setMethod("fit","MULTINOMresponse",
 				readline()
 				print(nrow(x))
 				readline()
-					fit <- avNNet.default(x,y,weights=w[!nas], size=0, trace=TRUE)
+					fit <- avNNet.default(x,y,weights=w[!nas], size=0, trace=FALSE)
 				} else {
 					# fit <- nnet.default(x,y,size=0,entropy=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=20000)
-					fit <- avNNet.default(x,y)
+					fit <- avNNet.default(x,y, size=0, trace=FALSE)
 				}
 			# this is necessary because setpars wants coefficients in column major order
 			pars$coefficients <- t(matrix(fit$wts,ncol=ncol(pars$coefficients),nrow=nrow(pars$coefficients)+1)[-1,])
