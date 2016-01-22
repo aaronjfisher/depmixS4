@@ -8,7 +8,7 @@ setMethod("fit","MULTINOMresponse",
 		if(object@family$link=="mlogit") {
 			pars <- object@parameters
 			base <- object@family$base # delete me
-			y <- as.factor(as.matrix(object@y[!nas,]))
+			y <- as.matrix(object@y[!nas,])
 			x <- as.matrix(object@x[!nas,])
 			#if(is.null(w)) w <- rep(1,nrow(y))
 			# mask is an nx*ny matrix (x are inputs, y are output levels)
@@ -20,6 +20,14 @@ setMethod("fit","MULTINOMresponse",
 			cat("registering cores\n")
 			registerDoMC(8) # detect number of cores on machine and register them with the doMC package to run nnets in parallel.
 			if(!is.null(w)) {
+				print(y)
+				readline()
+				print(x)
+				readline()
+				print(nrow(y))
+				readline()
+				print(nrow(x))
+				readline()
 					fit <- avNNet.default(x,y,weights=w[!nas])
 				} else {
 					# fit <- nnet.default(x,y,size=0,entropy=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=20000)
