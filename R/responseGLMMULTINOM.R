@@ -20,12 +20,18 @@ setMethod("fit","MULTINOMresponse",
 			cat("registering cores\n")
 			registerDoMC(8) # detect number of cores on machine and register them with the doMC package to run nnets in parallel.
 			if(!is.null(w)) {
-					#fit <- avNNet.default(x,y,weights=w[!nas], size=0, trace=FALSE, linout=TRUE)
-					fit <- avNNet.default(x,y, bag=TRUE, weights=w[!nas],size=0,trace=FALSE)
+				if(NCOL(y) < 3) {
+					fit <- nnet.default(x,y,weights=w[!nas],size=0,entropy=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=50000)
 				} else {
-					fit <- avNNet.default(x,y,size=0,bag=TRUE,entropy=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=20000)
-					
+					fit <- nnet.default(x,y,weights=w[!nas],size=0,softmax=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=50000)
 				}
+			} else {
+				if(NCOL(y) < 3) {
+					fit <- nnet.default(x,y,size=0,entropy=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=50000)
+				} else {
+					fit <- nnet.default(x,y,size=0,softmax=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=50000)
+				}
+			}
 			# this is necessary because setpars wants coefficients in column major order
 			pars$coefficients <- t(matrix(fit$wts,ncol=ncol(pars$coefficients),nrow=nrow(pars$coefficients)+1)[-1,])
 			# parameters are set correctly now
