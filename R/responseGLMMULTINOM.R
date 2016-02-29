@@ -20,15 +20,19 @@ setMethod("fit","MULTINOMresponse",
 			registerDoMC(detectCores()) # detect number of cores on machine and register them with the doMC package to run nnets in parallel.
 			if(!is.null(w)) {
 				if(NCOL(y) < 3) {
-					fit <- nnet.default(x,y,weights=w[!nas],size=0,entropy=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=50000)
+					# fit <- avNNet.default(x,y,weights=w[!nas],size=0,entropy=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=50000)
+					fit <- avNNet.default(x,y,weights=w[!nas])
 				} else {
-					fit <- nnet.default(x,y,weights=w[!nas],size=0,softmax=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=50000)
+					# fit <- avNNet.default(x,y,weights=w[!nas],size=0,softmax=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=50000)
+					fit <- avNNet.default(x,y,weights=w[!nas])
 				}
 			} else {
 				if(NCOL(y) < 3) {
-					fit <- nnet.default(x,y,size=0,entropy=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=50000)
+					# fit <- avNNet.default(x,y,size=0,entropy=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=50000)
+					fit <- avNNet.default(x,y)
 				} else {
-					fit <- nnet.default(x,y,size=0,softmax=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=50000)
+					# fit <- avNNet.default(x,y,size=0,softmax=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=50000)
+					fit <- avNNet.default(x,y)
 				}
 			}
 			# this is necessary because setpars wants coefficients in column major order
