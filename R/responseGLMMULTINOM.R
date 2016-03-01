@@ -21,18 +21,18 @@ setMethod("fit","MULTINOMresponse",
 			if(!is.null(w)) {
 				if(NCOL(y) < 3) {
 					# fit <- avNNet.default(x,y,weights=w[!nas],size=0,entropy=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=50000)
-					fit <- avNNet.default(x,y,weights=w[!nas])
+					fit <- avNNet.default(x,y,weights=w[!nas], size=0, MaxNWts=50000)
 				} else {
 					# fit <- avNNet.default(x,y,weights=w[!nas],size=0,softmax=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=50000)
-					fit <- avNNet.default(x,y,weights=w[!nas])
+					fit <- avNNet.default(x,y,weights=w[!nas], size=0, MaxNWts=50000)
 				}
 			} else {
 				if(NCOL(y) < 3) {
 					# fit <- avNNet.default(x,y,size=0,entropy=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=50000)
-					fit <- avNNet.default(x,y)
+					fit <- avNNet.default(x,y, size=0, MaxNWts=50000)
 				} else {
 					# fit <- avNNet.default(x,y,size=0,softmax=TRUE,skip=TRUE,mask=mask,Wts=Wts,trace=FALSE, MaxNWts=50000)
-					fit <- avNNet.default(x,y)
+					fit <- avNNet.default(x,y, size=0, MaxNWts=50000)
 				}
 			}
 			# this is necessary because setpars wants coefficients in column major order
