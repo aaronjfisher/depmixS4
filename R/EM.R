@@ -201,7 +201,9 @@ em.mix <- function(object,maxit=100,tol=1e-8,crit=c("relative","absolute"),rando
 			}
 		} else {
 			# this should not really happen...
-			if(j > 0 && (LL.old - LL) > tol) stop("likelihood decreased on iteration ",j)
+			# if(j > 0 && (LL.old - LL) > tol) stop("likelihood decreased on iteration ",j) # This won't be stable since we a moving to multicore .. so make it a warning.
+			if(j > 0 && (LL.old - LL) > tol) cat(paste("WARNING: likelihood decreased on iteration", j, "\n"))
+			
 		}
 
 		LL.old <- LL
@@ -365,7 +367,8 @@ em.depmix <- function(object,maxit=100,tol=1e-8,crit=c("relative","absolute"),ra
 			}
 		} else {
 		  # this should not really happen...
-		  if(j > 0 && (LL.old - LL) > tol) stop("likelihood decreased on iteration ",j)
+		  # if(j > 0 && (LL.old - LL) > tol) stop("likelihood decreased on iteration ",j)  # Moving to multicore so this could be possible .. but make it a warning
+		  if(j > 0 && (LL.old - LL) > tol) cat(paste("WARNING: likelihood decreased on iteration ",j, "\n"))
 		}
 		
 		LL.old <- LL
